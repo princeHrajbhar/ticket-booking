@@ -11,6 +11,7 @@ model User {
   id    Int     @id @default(autoincrement()) 
   email String  @unique
   name  String?
+  attendances EventAttendance[] 
   posts Post[]
 } 
 
@@ -34,4 +35,12 @@ model Event {
   total_capacity    Int
   remaining_tickets Int
   createdAt         DateTime @default(now())
+}
+
+model EventAttendance {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  entryTime DateTime
+
+  user      User     @relation(fields: [userId], references: [id])
 }
