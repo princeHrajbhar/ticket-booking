@@ -1,10 +1,8 @@
 import { prisma } from '../../lib/prisma.js';
-import logger from '../../lib/logger.js';
 import { CreateUserInput, UpdateUserInput } from '../validators/userValidator.js';
 
 export const userService = {
   async createUser(data: CreateUserInput) {
-    logger.info("Service: Create user", { data });
 
     return prisma.user.create({
       data
@@ -24,7 +22,6 @@ export const userService = {
   },
 
   async updateUser(id: number, data: UpdateUserInput) {
-    logger.info("Service: Update user", { id, data });
 
     return prisma.user.update({
       where: { id },
@@ -33,15 +30,11 @@ export const userService = {
   },
 
   async deleteUser(id: number) {
-    logger.info("Service: Delete user", { id });
-
     return prisma.user.delete({
       where: { id }
     });
   },
  async getUserBookings(userId: number) {
-    logger.info("Service: Get user bookings", { userId });
-
     return prisma.booking.findMany({
       where: {
         userId

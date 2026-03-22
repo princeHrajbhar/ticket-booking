@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import logger from '../../lib/logger.js';
 import { z } from 'zod';
 import { bookingService } from '../services/bookingService.js';
 
@@ -47,7 +46,6 @@ export const createBooking = async (req: Request, res: Response) => {
       return res.status(400).json({ error: error.message });
     }
 
-    logger.error("Create booking error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -73,7 +71,6 @@ export const getUserBookings = async (req: Request, res: Response) => {
     return res.status(200).json(bookings);
 
   } catch (error) {
-    logger.error("Get user bookings error", { error });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -115,7 +112,6 @@ export const markAttendance = async (req: Request, res: Response) => {
       return res.status(404).json({ error: error.message });
     }
 
-    logger.error("Attendance error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }

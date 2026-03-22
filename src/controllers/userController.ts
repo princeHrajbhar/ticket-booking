@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import logger from '../../lib/logger.js';
 
 import {
   CreateUserSchema,
@@ -31,7 +30,6 @@ export const createUser = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Email already exists" });
     }
 
-    logger.error("Create user error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -44,7 +42,6 @@ export const getAllUsers = async (_req: Request, res: Response) => {
     return res.status(200).json(users);
 
   } catch (error) {
-    logger.error("Get users error", { error });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -70,7 +67,6 @@ export const getUserById = async (req: Request, res: Response) => {
     return res.status(200).json(user);
 
   } catch (error) {
-    logger.error("Get user error", { error });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -108,7 +104,6 @@ export const updateUser = async (req: Request, res: Response) => {
       return res.status(409).json({ error: "Email already exists" });
     }
 
-    logger.error("Update user error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -134,7 +129,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    logger.error("Delete user error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -163,7 +157,6 @@ export const getUserBookings = async (req: Request, res: Response) => {
     return res.status(200).json(bookings);
 
   } catch (error) {
-    logger.error("Get user bookings error", { error });
 
     return res.status(500).json({
       error: "Internal Server Error"

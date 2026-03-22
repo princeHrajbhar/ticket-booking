@@ -1,6 +1,5 @@
 import express, { Application } from 'express';
 import cors from 'cors';
-import logger from './../lib/logger.js'; // Import your Winston logger
 import userRoutes from './routes/userRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
@@ -15,7 +14,6 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use((req, res, next) => {
-  logger.info(`Incoming ${req.method} request to ${req.url}`);
   next();
 });
 
@@ -26,7 +24,6 @@ app.use('/api/', bookingRoutes);
 
 // --- 4. Health Check ---
 app.get('/health', (req, res) => {
-  logger.info("Health check endpoint accessed");
   res.status(200).json({ 
     status: 'UP', 
     timestamp: new Date().toISOString() 
@@ -35,7 +32,6 @@ app.get('/health', (req, res) => {
 
 // --- 5. Global 404 Handler ---
 app.use((req, res) => {
-  logger.warn(`404 - Route not found: ${req.method} ${req.url}`);
   res.status(404).json({ error: "Route not found" });
 });
 
