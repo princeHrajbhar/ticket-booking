@@ -1,7 +1,7 @@
 // lib/prisma.ts
 import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "@prisma/client"; // ✅ FIXED
+import { PrismaClient } from "../generated/prisma";// ✅ FIXED
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
