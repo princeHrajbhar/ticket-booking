@@ -1,7 +1,7 @@
 // lib/prisma.ts
 import "dotenv/config";
 import { PrismaMariaDb } from "@prisma/adapter-mariadb";
-import { PrismaClient } from "../generated/prisma/client";
+import { PrismaClient } from "@prisma/client"; // ✅ FIXED
 
 const adapter = new PrismaMariaDb({
   host: process.env.DATABASE_HOST,
@@ -10,9 +10,11 @@ const adapter = new PrismaMariaDb({
   database: process.env.DATABASE_NAME,
   port: Number(process.env.DATABASE_PORT) || 4000,
   connectionLimit: 5,
-  // ADD THIS LINE BELOW
-  ssl: { minVersion: 'TLSv1.2' } 
+  ssl: { minVersion: "TLSv1.2" },
 });
 
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({
+  adapter,
+});
+
 export { prisma };
