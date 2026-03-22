@@ -162,13 +162,26 @@ export const eventService = {
     });
   },
 
-  async getAllEvents() {
-    logger.info("Service: Fetching all events");
+  // async getAllEvents() {
+  //   logger.info("Service: Fetching all events");
 
-    return prisma.event.findMany({
-      orderBy: { date: 'asc' }
-    });
-  },
+  //   return prisma.event.findMany({
+  //     orderBy: { date: 'asc' }
+  //   });
+  // },
+  async getAllEvents() {
+  logger.info("Service: Fetching upcoming events");
+
+  return prisma.event.findMany({
+    where: {
+      date: {
+        gte: new Date() // ✅ only future events
+      }
+    },
+    orderBy: { date: 'asc' }
+  });
+},
+
 
   async getEventById(id: number) {
     logger.info("Service: Fetching event by ID", { id });
@@ -196,5 +209,36 @@ export const eventService = {
     return prisma.event.delete({
       where: { id }
     });
+  },
+  async handleAttendance(eventId: number, bookingId: number) {
+    logger.info("Service: Attendance check", { eventId, bookingId });
+
+    // 1. Check booking exists for this event
+    const booking = await prisma.booking.findFirst({
+      
+      where: {
+        id: bookingId,
+        eventId
+        
+      }
+    });
+
+    if (!booking) {
+      throw new Error("Invalid booking");
+    }
+
+    // 2. Count total bookings (tickets) for this event
+    const totalBookings = await prisma.booking.count({
+      where: {
+        eventId
+      }
+    });
+
+    return {
+      message: "Valid ticket",
+      bookingId: booking.id,
+      userId: booking.userId,
+      totalTicketsBooked: totalBookings
+    };
   }
 };

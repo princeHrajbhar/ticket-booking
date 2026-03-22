@@ -38,5 +38,21 @@ export const userService = {
     return prisma.user.delete({
       where: { id }
     });
+  },
+ async getUserBookings(userId: number) {
+    logger.info("Service: Get user bookings", { userId });
+
+    return prisma.booking.findMany({
+      where: {
+        userId
+      },
+      include: {
+        event: true // optional but useful
+      },
+      orderBy: {
+        bookingDate: 'desc'
+      }
+    });
   }
 };
+

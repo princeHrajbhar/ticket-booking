@@ -5,7 +5,9 @@ import {
   getEventById, 
   updateEvent, 
   deleteEvent 
+  
 } from '../controllers/eventController.js';
+import { markAttendance } from '../controllers/eventController.js';
 
 const router = Router();
 
@@ -21,5 +23,7 @@ router.put('/:id', updateEvent);
 
 // DELETE
 router.delete('/:id', deleteEvent);
+
+router.post('/:id/attendance', markAttendance);
 
 export default router;

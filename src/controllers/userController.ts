@@ -8,6 +8,7 @@ import {
 } from '../validators/userValidator.js';
 
 import { userService } from '../services/userService.js';
+import z from 'zod';
 
 // ================= CREATE =================
 export const createUser = async (req: Request, res: Response) => {
@@ -136,5 +137,36 @@ export const deleteUser = async (req: Request, res: Response) => {
     logger.error("Delete user error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getUserBookings = async (req: Request, res: Response) => {
+  try {
+    // Validate ID
+    const schema = z.object({
+      id: z.string().regex(/^\d+$/, "Invalid user ID")
+    });
+
+    const parsed = schema.safeParse(req.params);
+
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: "Invalid user ID",
+        details: parsed.error.flatten()
+      });
+    }
+
+    const userId = Number(parsed.data.id);
+
+    const bookings = await userService.getUserBookings(userId);
+
+    return res.status(200).json(bookings);
+
+  } catch (error) {
+    logger.error("Get user bookings error", { error });
+
+    return res.status(500).json({
+      error: "Internal Server Error"
+    });
   }
 };

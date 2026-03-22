@@ -12,17 +12,11 @@ model User {
   email String  @unique
   name  String?
   attendances EventAttendance[] 
-  posts Post[]
+    bookings Booking[]
+
 } 
 
-model Post { 
-  id        Int     @id @default(autoincrement()) 
-  title     String
-  content   String? @db.Text
-  published Boolean @default(false) 
-  author    User    @relation(fields: [authorId], references: [id]) 
-  authorId  Int
-} 
+
 
 
 // prisma/schema.prisma
@@ -35,6 +29,7 @@ model Event {
   total_capacity    Int
   remaining_tickets Int
   createdAt         DateTime @default(now())
+   bookings Booking[]
 }
 
 model EventAttendance {
@@ -43,4 +38,16 @@ model EventAttendance {
   entryTime DateTime
 
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model Booking {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  eventId      Int
+  bookingDate  DateTime @default(now())
+
+  user         User     @relation(fields: [userId], references: [id])
+  event        Event    @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId]) // 🚀 prevent duplicate booking
 }
