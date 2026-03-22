@@ -183,33 +183,7 @@ export const eventService = {
 },
 
 
-  async getEventById(id: number) {
-    logger.info("Service: Fetching event by ID", { id });
 
-    return prisma.event.findUnique({
-      where: { id }
-    });
-  },
-
-  async updateEvent(id: number, data: Partial<CreateEventInput>) {
-    logger.info("Service: Updating event", { id, data });
-
-    return prisma.event.update({
-      where: { id },
-      data: {
-        ...data,
-        date: data.date ? new Date(data.date) : undefined,
-      },
-    });
-  },
-
-  async deleteEvent(id: number) {
-    logger.info("Service: Deleting event", { id });
-
-    return prisma.event.delete({
-      where: { id }
-    });
-  },
   async handleAttendance(eventId: number, bookingId: number) {
     logger.info("Service: Attendance check", { eventId, bookingId });
 

@@ -4,7 +4,6 @@ import logger from './../lib/logger.js'; // Import your Winston logger
 import userRoutes from './routes/userRoutes.js';
 import eventRoutes from './routes/eventRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
-import bookingTestRoutes from './routes/bookingTestRoutes.js';
 
 
 const app: Application = express();
@@ -25,7 +24,6 @@ app.use((req, res, next) => {
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/bookings', bookingRoutes);
-app.use('/api/bookingsTest', bookingTestRoutes);
 
 // --- 4. Health Check ---
 app.get('/health', (req, res) => {

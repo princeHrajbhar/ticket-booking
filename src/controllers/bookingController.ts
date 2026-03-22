@@ -1,18 +1,18 @@
 import { Request, Response } from 'express';
 import logger from '../../lib/logger.js';
-
-import {
-  CreateBookingSchema,
-  UpdateBookingSchema,
-  BookingIdParamSchema
-} from '../validators/bookingValidator.js';
-
+import { z } from 'zod';
 import { bookingService } from '../services/bookingService.js';
 
-// CREATE
+// ================= CREATE BOOKING =================
 export const createBooking = async (req: Request, res: Response) => {
   try {
-    const parsed = CreateBookingSchema.safeParse(req.body);
+    const schema = z.object({
+      userId: z.number(),
+      eventId: z.number(),
+      quantity: z.number().min(1).max(10)
+    });
+
+    const parsed = schema.safeParse(req.body);
 
     if (!parsed.success) {
       return res.status(400).json({
@@ -23,13 +23,28 @@ export const createBooking = async (req: Request, res: Response) => {
 
     const booking = await bookingService.createBooking(parsed.data);
 
-    return res.status(201).json(booking);
+    return res.status(201).json({
+      message: "Booking successful",
+      bookingId: booking.id,
+      quantity: booking.quantity
+    });
 
   } catch (error: any) {
-    if (error.code === 'P2002') {
-      return res.status(409).json({
-        error: "User already booked this event"
-      });
+
+    if (error.message === "User not found") {
+      return res.status(404).json({ error: error.message });
+    }
+
+    if (error.message === "Event not found") {
+      return res.status(404).json({ error: error.message });
+    }
+
+    if (error.message === "Not enough tickets available") {
+      return res.status(400).json({ error: error.message });
+    }
+
+    if (error.message === "Ticket limit exceeded") {
+      return res.status(400).json({ error: error.message });
     }
 
     logger.error("Create booking error", { error });
@@ -38,99 +53,69 @@ export const createBooking = async (req: Request, res: Response) => {
   }
 };
 
-// GET ALL
-export const getAllBookings = async (_req: Request, res: Response) => {
+// ================= GET USER BOOKINGS =================
+export const getUserBookings = async (req: Request, res: Response) => {
   try {
-    const data = await bookingService.getAllBookings();
-    return res.status(200).json(data);
+    const schema = z.object({
+      id: z.string().regex(/^\d+$/)
+    });
 
-  } catch (error) {
-    logger.error("Get bookings error", { error });
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// GET BY ID
-export const getBookingById = async (req: Request, res: Response) => {
-  try {
-    const parsed = BookingIdParamSchema.safeParse(req.params);
+    const parsed = schema.safeParse(req.params);
 
     if (!parsed.success) {
-      return res.status(400).json({ error: "Invalid ID" });
+      return res.status(400).json({ error: "Invalid user ID" });
     }
 
-    const booking = await bookingService.getBookingById(
-      Number(parsed.data.id)
-    );
+    const userId = Number(parsed.data.id);
 
-    if (!booking) {
-      return res.status(404).json({ error: "Not found" });
-    }
+    const bookings = await bookingService.getBookingsByUser(userId);
 
-    return res.status(200).json(booking);
+    return res.status(200).json(bookings);
 
   } catch (error) {
-    logger.error("Get booking error", { error });
+    logger.error("Get user bookings error", { error });
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// UPDATE
-export const updateBooking = async (req: Request, res: Response) => {
+// ================= ATTENDANCE =================
+export const markAttendance = async (req: Request, res: Response) => {
   try {
-    const param = BookingIdParamSchema.safeParse(req.params);
-    const body = UpdateBookingSchema.safeParse(req.body);
+    const paramSchema = z.object({
+      id: z.string().regex(/^\d+$/)
+    });
 
-    if (!param.success) {
-      return res.status(400).json({ error: "Invalid ID" });
+    const bodySchema = z.object({
+      bookingId: z.number()
+    });
+
+    const paramParsed = paramSchema.safeParse(req.params);
+    const bodyParsed = bodySchema.safeParse(req.body);
+
+    if (!paramParsed.success) {
+      return res.status(400).json({ error: "Invalid event ID" });
     }
 
-    if (!body.success) {
+    if (!bodyParsed.success) {
       return res.status(400).json({
         error: "Validation Failed",
-        details: body.error.flatten()
+        details: bodyParsed.error.flatten()
       });
     }
 
-    const updated = await bookingService.updateBooking(
-      Number(param.data.id),
-      body.data
-    );
+    const eventId = Number(paramParsed.data.id);
+    const bookingId = bodyParsed.data.bookingId;
 
-    return res.status(200).json(updated);
+    const result = await bookingService.verifyAttendance(eventId, bookingId);
 
-  } catch (error: any) {
-    if (error.code === 'P2025') {
-      return res.status(404).json({ error: "Not found" });
-    }
-
-    logger.error("Update booking error", { error });
-
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// DELETE
-export const deleteBooking = async (req: Request, res: Response) => {
-  try {
-    const parsed = BookingIdParamSchema.safeParse(req.params);
-
-    if (!parsed.success) {
-      return res.status(400).json({ error: "Invalid ID" });
-    }
-
-    await bookingService.deleteBooking(Number(parsed.data.id));
-
-    return res.status(200).json({
-      message: "Deleted successfully"
-    });
+    return res.status(200).json(result);
 
   } catch (error: any) {
-    if (error.code === 'P2025') {
-      return res.status(404).json({ error: "Not found" });
+    if (error.message === "Invalid booking") {
+      return res.status(404).json({ error: error.message });
     }
 
-    logger.error("Delete booking error", { error });
+    logger.error("Attendance error", { error });
 
     return res.status(500).json({ error: "Internal Server Error" });
   }

@@ -59,57 +59,8 @@ export const getAllEvents = async (req: Request, res: Response) => {
   }
 };
 
-// GET EVENT BY ID
-export const getEventById = async (req: Request, res: Response) => {
-  const id = Number(req.params.id);
 
-  logger.info("Controller: Fetching event by ID", { id });
 
-  try {
-    const event = await eventService.getEventById(id);
-
-    if (!event) {
-      return res.status(404).json({ error: "Event not found" });
-    }
-
-    return res.status(200).json(event);
-  } catch (error) {
-    logger.error("Controller: Error fetching event", { error });
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// UPDATE EVENT
-export const updateEvent = async (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-
-  logger.info("Controller: Updating event", { id, body: req.body });
-
-  try {
-    const updatedEvent = await eventService.updateEvent(id, req.body);
-
-    return res.status(200).json(updatedEvent);
-  } catch (error) {
-    logger.error("Controller: Error updating event", { error });
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// DELETE EVENT
-export const deleteEvent = async (req: Request, res: Response) => {
-  const id = Number(req.params.id);
-
-  logger.info("Controller: Deleting event", { id });
-
-  try {
-    await eventService.deleteEvent(id);
-
-    return res.status(200).json({ message: "Event deleted successfully" });
-  } catch (error) {
-    logger.error("Controller: Error deleting event", { error });
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
 export const markAttendance = async (req: Request, res: Response) => {
   try {
