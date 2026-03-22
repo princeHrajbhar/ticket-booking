@@ -13,8 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// --- 2. Custom Request Logger Middleware ---
-// Automatically logs every incoming request to your app.log file
+
 app.use((req, res, next) => {
   logger.info(`Incoming ${req.method} request to ${req.url}`);
   next();
