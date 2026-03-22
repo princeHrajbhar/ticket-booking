@@ -15,15 +15,11 @@ model User {
     bookings Booking[]
 
 } 
-
-
-
-
 // prisma/schema.prisma
 
 model Event {
   id                Int      @id @default(autoincrement())
-  title             String
+  title             String   @unique 
   description       String?  @db.Text
   date              DateTime
   total_capacity    Int

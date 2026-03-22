@@ -9,7 +9,7 @@ const router = Router();
 
 // CREATE BOOKING
 // POST /api/bookings
-router.post('/', createBooking);
+router.post('/bookings', createBooking);
 
 //  GET USER BOOKINGS
 // GET /api/bookings/users/:id/bookings

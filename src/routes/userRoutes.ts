@@ -15,6 +15,9 @@ router.get('/', getAllUsers);
 router.get('/:id', getUserById);
 router.put('/:id', updateUser);
 router.delete('/:id', deleteUser);
+//  GET USER BOOKINGS
+// GET /api/bookings/users/:id/bookings
+router.get('/users/:id/bookings', getUserBookings);
 
 
 // GET /users/:id/bookings

@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 // --- 3. Routes ---
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/api/bookings', bookingRoutes);
+app.use('/api/', bookingRoutes);
 
 // --- 4. Health Check ---
 app.get('/health', (req, res) => {

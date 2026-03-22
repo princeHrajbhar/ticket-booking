@@ -147,9 +147,20 @@ import logger from '../../lib/logger.js';
 //   }
 // };
 
-export const eventService = {
-  async createNewEvent(data: CreateEventInput) {
+export const eventService = { 
+ async createNewEvent(data: CreateEventInput) {
     logger.info("Service: Creating event", { data });
+
+    // ✅ Check if event already exists (same title)
+    const existingEvent = await prisma.event.findFirst({
+      where: {
+        title: data.title
+      }
+    });
+
+    if (existingEvent) {
+      throw new Error("Event with this title already exists");
+    }
 
     return prisma.event.create({
       data: {
@@ -160,7 +171,7 @@ export const eventService = {
         remaining_tickets: data.remaining_tickets,
       },
     });
-  },
+},
 
   // async getAllEvents() {
   //   logger.info("Service: Fetching all events");
