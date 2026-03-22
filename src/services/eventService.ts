@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/prisma.js';
+import { prisma } from '../lib/prisma.js';
 import { CreateEventInput } from '../validators/eventValidator.js';
 
 

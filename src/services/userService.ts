@@ -1,4 +1,4 @@
-import { prisma } from '../../lib/prisma.js';
+import { prisma } from '../lib/prisma';
 import { CreateUserInput, UpdateUserInput } from '../validators/userValidator.js';
 
 export const userService = {

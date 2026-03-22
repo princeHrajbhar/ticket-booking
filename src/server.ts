@@ -1,7 +1,7 @@
 // src/server.ts
 import 'dotenv/config';
 import app from './app';
-import { prisma } from '../lib/prisma';
+import { prisma } from './lib/prisma';
 
 const PORT = process.env.PORT || 3000;
 

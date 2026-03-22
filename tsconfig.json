@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "module": "ESNext",
-      "outDir": "./dist",
-     
-    "moduleResolution": "bundler",
-    "target": "ES2023",
+    "module": "es2020",          // <-- use ES module
+    "moduleResolution": "node",
+    "target": "ES2020",
     "strict": true,
     "esModuleInterop": true,
-  
-  }
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
 // {
 //   "compilerOptions": {
