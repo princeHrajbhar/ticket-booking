@@ -21,6 +21,11 @@ app.use((req, res, next) => {
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/', bookingRoutes);
+app.get("/", (req, res) => {
+  res.json({
+    message: "API is running 🚀"
+  });
+});
 
 // --- 4. Health Check ---
 app.get('/health', (req, res) => {
